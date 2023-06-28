@@ -16,6 +16,13 @@ const model = new OpenAI({ openAIApiKey: process.env.OPENAI_API_KEY });
 //   const { characters, plot, settings } = req.body;
 // };
 
+app.get("/", async (req, res) => {
+  return res.status(200).json({
+    status: "Success",
+    msg: "Running Smooth!",
+  });
+});
+
 app.post("/api/story", async (req, res) => {
   const { characters, plot, settings } = req.body;
   const names = characters?.name.map((el) => el);
