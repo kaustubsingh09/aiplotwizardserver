@@ -2,7 +2,7 @@ import express from "express";
 import dotenv, { config } from "dotenv";
 import cors from "cors";
 import bodyParser from "body-parser";
-dotenv.config({ path: "./.env" });
+dotenv.config();
 import { OpenAI } from "langchain/llms/openai";
 import { PromptTemplate } from "langchain/prompts";
 import { LLMChain } from "langchain/chains";
