@@ -33,12 +33,6 @@ const generateImage = async (prompt) => {
   }
 };
 
-// app.get("/api/img", async (req, res) => {
-//   return res.json({
-//     data:"Hello World"
-//   })
-// });
-
 app.post("/api/story", async (req, res) => {
   const { characters, plot, settings } = req.body;
   const names = characters?.name.map((el) => el);
@@ -73,7 +67,6 @@ app.post("/api/story", async (req, res) => {
     });
   }
 });
-
 
 app.listen(process.env.PORT, () => {
   console.log("Server listening at", process.env.PORT);
