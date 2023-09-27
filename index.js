@@ -6,22 +6,38 @@ dotenv.config({ path: "./.env" });
 import { OpenAI } from "langchain/llms/openai";
 import { PromptTemplate } from "langchain/prompts";
 import { LLMChain } from "langchain/chains";
+import { Configuration, OpenAIApi } from "openai";
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
 const model = new OpenAI({ openAIApiKey: process.env.OPENAI_API_KEY });
 
-// const getData = async (req, res) => {
-//   const { characters, plot, settings } = req.body;
-// };
-
-app.get("/", async (req, res) => {
-  return res.status(200).json({
-    status: "Success",
-    msg: "Running Smooth!",
-  });
+//initializing openAi Configuration
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
 });
+const openai = new OpenAIApi(configuration);
+
+const generateImage = async (prompt) => {
+  try {
+    const image = await openai.createImage({
+      prompt: prompt,
+      n: 1,
+      size: "256x256",
+    });
+    const imageUrl = image.data.data[0].url;
+    return imageUrl;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// app.get("/api/img", async (req, res) => {
+//   return res.json({
+//     data:"Hello World"
+//   })
+// });
 
 app.post("/api/story", async (req, res) => {
   const { characters, plot, settings } = req.body;
@@ -42,16 +58,22 @@ app.post("/api/story", async (req, res) => {
       appearance: characters.appearance,
       backstory: characters.backStory,
     });
-    console.log(data);
-    res.json(data);
+    const image = await generateImage(
+      "a handsome man sitting with laptop and a extra monitor wearing headphones in anime style"
+    ); //=> to be dynamic
+    // console.log(image, data);
+    res.json({
+      data: data,
+      image: image,
+    });
   } catch (err) {
-    console.log(err)
     return res.status(404).json({
       status: "error",
       msg: err,
     });
   }
 });
+
 
 app.listen(process.env.PORT, () => {
   console.log("Server listening at", process.env.PORT);
